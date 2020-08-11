@@ -19,7 +19,6 @@ class Listing(models.Model):
     description = models.TextField(max_length=1000)
     image_url = models.URLField()
     initial_bid = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    min_bid = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     category = models.CharField(blank=True, choices=CATEGORIES, max_length=64)
     creation_time = models.DateTimeField()
     owner = models.ForeignKey(User, on_delete=models.CASCADE)

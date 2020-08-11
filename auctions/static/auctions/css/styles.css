@@ -1,0 +1,21 @@
+body {
+  padding: 10px;
+}
+
+.pageheading {
+  margin: 20px 0;
+}
+
+#createlistingform label, #createlistingform input, #createlistingform textarea, #createlistingform select {
+  margin: 10px 0;
+}
+
+#createlistingform input, #createlistingform textarea, #createlistingform select {
+  width: 300px;
+  padding-left: 5px;
+}
+
+#createbutton {
+  margin: auto;
+}
+/*# sourceMappingURL=styles.css.map */
