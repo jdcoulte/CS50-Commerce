@@ -25,7 +25,7 @@
             </li>
             {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Watchlist</a>
+                    <a class="nav-link" href="#">Watchlist&nbsp;<span class="rounded" id="watchlistcount">{% block watchlist %}{% endblock %}&nbsp;</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'create' %}">Create Listing</a>

@@ -21,23 +21,24 @@ class Listing(models.Model):
     initial_bid = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     category = models.CharField(blank=True, choices=CATEGORIES, max_length=64)
     creation_time = models.DateTimeField()
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_listings")
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
 
 class Bid(models.Model):
-    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="listing_bids")
     bid = models.DecimalField(max_digits=12, decimal_places=2)
     bid_time = models.DateTimeField()
-    bidder = models.ForeignKey(User, on_delete=models.CASCADE)
+    bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_bids")
 
     def __str__(self):
         return f"User {self.bidder} bid: ${self.bid}"
 
 class Comment(models.Model):
-    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="listing_comments")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_comments")
     comment = models.TextField(max_length=1000)
     date = models.DateField()
 
@@ -45,5 +46,5 @@ class Comment(models.Model):
         return f"User {self.user} comment on listing {self.listing} on {self.date}"
 
 class Favorite(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_favorites")
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)

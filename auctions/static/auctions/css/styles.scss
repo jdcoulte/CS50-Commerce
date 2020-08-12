@@ -20,3 +20,22 @@ body {
 #createbutton {
     margin: auto;
 }
+
+.listingrow {
+    height: 300px;
+}
+
+.creationtime {
+    font-size: 0.9em;
+    font-weight: bold;
+    font-style: italic;
+    color: #333;
+}
+
+#watchlistcount {
+    background-color: #888;
+    color: white;
+    font-weight: 600;
+    align-items: center;
+    padding: 0 2px 1px 5px;
+}

@@ -5,11 +5,20 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
-from .models import User
+from .models import User, Listing, Bid, Comment
 from .forms import ListingForm
 
+import datetime
+
 def index(request):
-    return render(request, "auctions/index.html")
+    listings = Listing.objects.filter(active=True)
+    watchlist = request.user.user_favorites.all()
+    watchlistcount = len(watchlist)
+    return render(request, "auctions/index.html", {
+        "listings": listings,
+        "watchlist": watchlist,
+        "watchlistcount": watchlistcount
+    })
 
 
 def login_view(request):
@@ -66,10 +75,26 @@ def register(request):
 @login_required()
 def create(request):
     if request.method == "POST":
-        # TODO
-        return HttpResponseRedirect(reverse("index"))
+        form = ListingForm(request.POST)
+        if form.is_valid():
+            listing = Listing()
+            listing.title = form.cleaned_data['title']
+            listing.description = form.cleaned_data['description']
+            listing.image_url = form.cleaned_data['image_url']
+            listing.initial_bid = form.cleaned_data['initial_bid']
+            listing.category = form.cleaned_data['category']
+            listing.creation_time = datetime.datetime.now()
+            listing.owner = request.user
+            listing.active = True
+            listing.save()
+            return HttpResponseRedirect(reverse("index"))
+        else:
+            form = ListingForm()
+            return render(request, "auctions/create.html", {
+                'form': form,
+                'message': "Invalid listing. Please try again."
+            })
     else:
-        form = ListingForm()
         return render(request, "auctions/create.html", {
-            'form': form
+            'form': ListingForm()
         })

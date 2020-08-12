@@ -1,7 +1,33 @@
 {% extends "auctions/layout.html" %}
 
-{% block body %}
-    <h2>Active Listings</h2>
+{% block watchlist %}
 
-    TODO
+{{ watchlistcount }}
+
+{% endblock %}
+
+{% block body %}
+
+    <h2>Active Listings</h2><br>
+    {% for listing in listings %}
+        <div class="row border m-3 p-2 shadow listingrow">
+            <div class="col-4 p-2 text-center">
+                <img src="{{ listing.image_url }}" alt="listing image" width=400>
+            </div>
+            <div class="col-4 p-2">
+                <h3>{{ listing.title }}</h3>
+                <p><strong>Price: </strong>${{ listing.initial_bid }}</p><p><em>[Currently showing initial bid. To be updated for highest bid]</em></p><br>
+                <p>{{ listing.description }}</p>
+                <p class="creationtime">Created {{ listing.creation_time }}</p>
+            </div>
+            <div class="col-4 p-2">
+                <button class="btn btn-primary" href="#">View Full Listing</button>
+                <form action="/add" method="post">
+                    <input type="hidden" value="{{ listing.id }}">
+                    <input class="btn btn-primary" type="submit" value="Add to Watchlist" id="addtowatchlist">
+                </form>
+            </div>
+        </div>
+    {% endfor %}
+    
 {% endblock %}
