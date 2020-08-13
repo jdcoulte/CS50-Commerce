@@ -23,6 +23,7 @@ class Listing(models.Model):
     creation_time = models.DateTimeField()
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_listings")
     active = models.BooleanField(default=True)
+    max_bid = models.DecimalField(max_digits=12, decimal_places=2, default=0)
 
     def __str__(self):
         return self.title

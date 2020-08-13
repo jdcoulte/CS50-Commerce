@@ -1,30 +1,22 @@
 {% extends "auctions/layout.html" %}
 
-{% block watchlist %}
-
-{{ watchlistcount }}
-
-{% endblock %}
-
 {% block body %}
 
     <h2>Active Listings</h2><br>
     {% for listing in listings %}
         <div class="row border m-3 p-2 shadow listingrow">
             <div class="col-4 p-2 text-center">
-                <img src="{{ listing.image_url }}" alt="listing image" width=400>
+                <img src="{{ listing.image_url }}" alt="listing image" class="listingimg">
             </div>
-            <div class="col-4 p-2">
+            <div class="col-8 p-2">
                 <h3>{{ listing.title }}</h3>
-                <p><strong>Price: </strong>${{ listing.initial_bid }}</p><p><em>[Currently showing initial bid. To be updated for highest bid]</em></p><br>
-                <p>{{ listing.description }}</p>
+                <p class="pricerow"><strong>Price: </strong>${{ listing.max_bid }}</p>
+                <p class="descriptionrow">{{ listing.description }}</p>
                 <p class="creationtime">Created {{ listing.creation_time }}</p>
-            </div>
-            <div class="col-4 p-2">
-                <button class="btn btn-primary" href="#">View Full Listing</button>
+                <a class="btn btn-primary listing-button" href="/listings/{{ listing.id }}">View Full Listing</a>
                 <form action="/add" method="post">
                     <input type="hidden" value="{{ listing.id }}">
-                    <input class="btn btn-primary" type="submit" value="Add to Watchlist" id="addtowatchlist">
+                    <input class="btn btn-primary listing-button" type="submit" value="Add to Watchlist">
                 </form>
             </div>
         </div>

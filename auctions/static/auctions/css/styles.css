@@ -25,9 +25,9 @@ body {
 
 .creationtime {
   font-size: 0.9em;
-  font-weight: bold;
+  font-weight: 600;
   font-style: italic;
-  color: #333;
+  color: #666;
 }
 
 #watchlistcount {
@@ -38,5 +38,50 @@ body {
       -ms-flex-align: center;
           align-items: center;
   padding: 0 2px 1px 5px;
+}
+
+.listing-button {
+  display: inline-block;
+  width: 200px;
+  margin: 10px 10px 10px 0;
+  float: left;
+}
+
+.listingimg {
+  max-width: 100%;
+  width: 400px;
+}
+
+.pricerow {
+  margin-bottom: 10px;
+}
+
+.descriptionrow {
+  min-height: 50px;
+}
+
+@media screen and (max-width: 750px) {
+  .listing-button {
+    width: 140px;
+    font-size: 0.8em;
+    margin: 5px 5px 5px 0;
+  }
+}
+
+#onwatchlist {
+  background-color: #5A6268;
+  width: 150px;
+  padding: 5px;
+  margin: 0;
+  color: white;
+  font-weight: 500;
+  text-align: center;
+}
+
+#removefromwatchlist {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  width: 150px;
 }
 /*# sourceMappingURL=styles.css.map */

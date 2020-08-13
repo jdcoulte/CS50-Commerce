@@ -4,8 +4,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.db.models import Max
 
-from .models import User, Listing, Bid, Comment
+from .models import User, Listing, Bid, Comment, Favorite
 from .forms import ListingForm
 
 import datetime
@@ -14,10 +15,14 @@ def index(request):
     listings = Listing.objects.filter(active=True)
     watchlist = request.user.user_favorites.all()
     watchlistcount = len(watchlist)
+    bid = {}
+    for listing in listings:
+        if listing.max_bid == 0:
+            listing.max_bid = listing.initial_bid
     return render(request, "auctions/index.html", {
         "listings": listings,
         "watchlist": watchlist,
-        "watchlistcount": watchlistcount
+        "watchlistcount": watchlistcount,
     })
 
 
@@ -95,6 +100,26 @@ def create(request):
                 'message': "Invalid listing. Please try again."
             })
     else:
+        watchlist = request.user.user_favorites.all()
+        watchlistcount = len(watchlist)
         return render(request, "auctions/create.html", {
-            'form': ListingForm()
+            'form': ListingForm(),
+            'watchlistcount': watchlistcount
         })
+
+def listing(request, listing_id):
+    listing = Listing.objects.get(pk=listing_id)
+    favorites = Favorite.objects.filter(user=request.user)
+    #favorite = listing in favorites
+    favorite = True
+    if listing.max_bid == 0:
+        listing.max_bid = listing.initial_bid
+    bids = Bid.objects.filter(listing=listing)
+    watchlist = request.user.user_favorites.all()
+    watchlistcount = len(watchlist)
+    return render(request, "auctions/listing.html", {
+        'listing': listing,
+        'bids': bids,
+        'favorite': favorite,
+        'watchlistcount': watchlistcount
+    })
