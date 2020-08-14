@@ -24,6 +24,7 @@ class Listing(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_listings")
     active = models.BooleanField(default=True)
     max_bid = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    saved = models.ManyToManyField(User, blank=True, related_name="favorites")
 
     def __str__(self):
         return self.title
@@ -45,7 +46,3 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"User {self.user} comment on listing {self.listing} on {self.date}"
-
-class Favorite(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_favorites")
-    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)

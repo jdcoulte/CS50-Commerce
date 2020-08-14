@@ -10,5 +10,6 @@ urlpatterns = [
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
     path("create", views.create, name="create"),
-    path("listings/<int:listing_id>", views.listing, name="listing")
+    path("listings/<int:listing_id>", views.listing, name="listing"),
+    path("bid/<int:listing_id>", views.bid, name="bid")
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

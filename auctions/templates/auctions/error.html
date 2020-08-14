@@ -1,0 +1,13 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+
+{{ error }}
+
+{% endblock %}
+
+{% block body %}
+    <h2>{{ error }}</h2>
+    <p>{{ message }}</p>
+    <a href="{{link}}">{{linktext}}</a>
+{% endblock %}

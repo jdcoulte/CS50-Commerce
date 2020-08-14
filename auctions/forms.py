@@ -1,5 +1,5 @@
-from django.forms import ModelForm
-from .models import Listing
+from django.forms import ModelForm, Form
+from .models import Listing, Bid
 
 class ListingForm(ModelForm):
     class Meta:
@@ -12,3 +12,8 @@ class ListingForm(ModelForm):
             'initial_bid': "Initial Bid ($):",
             'category': "Category (Choose one):"
         }
+
+class BidForm(ModelForm):
+    class Meta:
+        model = Bid
+        fields = ['bid']

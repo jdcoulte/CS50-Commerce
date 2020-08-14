@@ -12,24 +12,43 @@ Listing: {{ listing.title }}
             <div class="col-8">
                 <h2>Listing: {{ listing.title }}</h2>
             </div>
-            <div class="col-4 right">
-                {% if favorite %}
-                    <p class="rounded" id="onwatchlist">Watchlist</p>
-                    <p id="removefromwatchlist"><a href="remove/{{ listing.id }}">Remove</a></p>
-                {% else %}
-                    <form action="/add" method="post">
-                        <input type="hidden" value="{{ listing.id }}">
-                        <input class="btn btn-secondary" type="submit" value="Add to Watchlist">
-                    </form>
-                {% endif %}
-            </div>
+            {% if user.is_authenticated %}
+                <div class="col-4 right">
+                    {% if favorite %}
+                        <p class="rounded" id="onwatchlist">Watchlist</p>
+                        <p id="removefromwatchlist"><a href="remove/{{ listing.id }}">Remove</a></p>
+                    {% else %}
+                        <form action="/add" method="post">
+                            <input type="hidden" value="{{ listing.id }}">
+                            <input class="btn btn-secondary" type="submit" value="Add to Watchlist">
+                        </form>
+                    {% endif %}
+                </div>
+            {% endif %}
         </div>
         <div class="row p-2">
             <img src="{{ listing.image_url }}" alt="listing image">
         </div>
         <div class="row p-2">
-            <p id="listingprice"><strong>Price: </strong>${{ listing.max_bid }}</p>
-        </div>  
+            <h3>Description:</h3>
+            <p>{{ listing.description }}</p>
+        </div>
+        <div class="row p-2">
+            <p id="listingprice"><strong>Current Price: </strong>${{ listing.max_bid }}</p>
+        </div>
+        <p>{{ bidcount }} bids so far.</p>
+        <form action="/bid/{{ listing.id }}" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input class="btn btn-primary" type="submit" value="Place Bid">
+        </form>
+        <div class="row p-2">
+            <h3>Additional Details:</h3>
+            <ul>
+                <li>Listed by <strong>{{ owner }}</strong></li>
+                <li>Category: {{ listing.category }}</li>
+                <li>Listed on: {{ listing.creation_time }}</li>
+            </ul>
+        </div>
     </div>
-    
 {% endblock %}
