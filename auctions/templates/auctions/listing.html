@@ -37,7 +37,7 @@ Listing: {{ listing.title }}
             <p id="listingprice"><strong>Current Price: </strong>${{ listing.max_bid }}</p>
         </div>
         <p>{{ bidcount }} bids so far.</p>
-        <form action="/bid/{{ listing.id }}" method="post">
+        <form action="{% url 'bid' listing.id %}" method="post">
             {% csrf_token %}
             {{ form }}
             <input class="btn btn-primary" type="submit" value="Place Bid">

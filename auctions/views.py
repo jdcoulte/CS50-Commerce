@@ -4,7 +4,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from django.db.models import Max
 
 from .models import User, Listing, Bid, Comment
 from .forms import ListingForm, BidForm
@@ -183,6 +182,4 @@ def bid(request, listing_id):
             'linktext': linktext
         })
     else:
-        url = "listing" + str(listing_id)
-        # This is not currently working because it is trying to redirect to /bid/listing/listing_id. Need to figure out how to pass a parameter into the "reverse" function.
-        return HttpResponseRedirect(url)
+        return HttpResponseRedirect(reverse("listing", args=(listing_id,)))

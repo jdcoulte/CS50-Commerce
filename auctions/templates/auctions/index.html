@@ -13,13 +13,18 @@
                 <p class="pricerow"><strong>Price: </strong>${{ listing.max_bid }}</p>
                 <p class="descriptionrow">{{ listing.description }}</p>
                 <p class="creationtime">Created {{ listing.creation_time }}</p>
-                <a class="btn btn-primary listing-button" href="/listings/{{ listing.id }}">View Full Listing</a>
+                <a class="btn btn-primary listing-button" href="{% url 'listing' listing.id %}">View Full Listing</a>
                 <form action="/add" method="post">
                     <input type="hidden" value="{{ listing.id }}">
                     <input class="btn btn-primary listing-button" type="submit" value="Add to Watchlist">
                 </form>
             </div>
         </div>
+
+    {% empty %}
+    <ul>
+        <li>No listings</li>
+    </ul>
     {% endfor %}
     
 {% endblock %}
