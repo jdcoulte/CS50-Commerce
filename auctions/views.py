@@ -12,7 +12,11 @@ import datetime
 
 def index(request):
     listings = Listing.objects.filter(active=True)
-    watchlist = request.user.favorites.all()
+
+    if request.user.is_authenticated:
+        watchlist = request.user.favorites.all()
+    else:
+        watchlist = []
     watchlistcount = len(watchlist)
     bid = {}
     for listing in listings:
@@ -134,7 +138,6 @@ def listing(request, listing_id):
 
         return render(request, "auctions/listing.html", {
             'listing': listing,
-            'owner': owner,
             'bids': bids,
             'favorite': favorite,
             'watchlistcount': watchlistcount,
@@ -144,7 +147,6 @@ def listing(request, listing_id):
     else:
         return render(request, "auctions/listing.html", {
             'listing': listing,
-            'owner': owner,
             'bids': bids,
             'bidcount': bidcount
         })
@@ -183,3 +185,115 @@ def bid(request, listing_id):
         })
     else:
         return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
+
+def close(request):
+    if request.method == "POST":
+        listingid = request.POST['listingid']
+        listing = Listing.objects.get(pk=listingid)
+        bids = Bid.objects.filter(listing=listing)
+        bidcount = len(bids)
+        
+        if request.user == listing.owner:
+            listing.active = False
+            listing.save()
+            # Get a list of the logged-in user's favorites.
+            favorites = request.user.favorites.all()
+    
+            # Check if the listing is in the user's list of favorites.
+            favorite = listing in favorites # Will return true if the user has favorited the listing.
+
+            # Get a count of listings the user has favorited (for the number displayed on the menu)
+            watchlistcount = len(favorites)
+
+            return render(request, "auctions/listing.html", {
+                'listing': listing,
+                'bids': bids,
+                'favorite': favorite,
+                'watchlistcount': watchlistcount,
+                'bidcount': bidcount,
+            })
+        else:
+            message = "Unable to close listing. Please return to the listing to try again."
+            link = "/listings/" + str(listingid)
+            linktext = "Return to Listing"
+            return render(request, "auctions/error.html", {
+                'error': 'Unable to Close Listing',
+                'message': message,
+                'link': link,
+                'linktext': linktext
+        })
+    else:
+        return HttpResponseRedirect(reverse("index"))
+
+def open(request):
+    if request.method == "POST":
+        listingid = request.POST['listingid']
+        listing = Listing.objects.get(pk=listingid)
+        bids = Bid.objects.filter(listing=listing)
+        bidcount = len(bids)
+        
+        if request.user == listing.owner:
+            listing.active = True
+            listing.save()
+            # Get a list of the logged-in user's favorites.
+            favorites = request.user.favorites.all()
+    
+            # Check if the listing is in the user's list of favorites.
+            favorite = listing in favorites # Will return true if the user has favorited the listing.
+
+            # Get a count of listings the user has favorited (for the number displayed on the menu)
+            watchlistcount = len(favorites)
+
+            return render(request, "auctions/listing.html", {
+                'listing': listing,
+                'bids': bids,
+                'favorite': favorite,
+                'watchlistcount': watchlistcount,
+                'bidcount': bidcount,
+            })
+        else:
+            message = "Unable to re-open listing. Please return to the listing to try again."
+            link = "/listings/" + str(listingid)
+            linktext = "Return to Listing"
+            return render(request, "auctions/error.html", {
+                'error': 'Unable to Close Listing',
+                'message': message,
+                'link': link,
+                'linktext': linktext
+        })
+    else:
+        return HttpResponseRedirect(reverse("index"))
+
+def add(request):
+    if request.method == "POST":
+        listingid = request.POST['listingid']
+        returnpage = request.POST['page']
+        listing = Listing.objects.get(pk=listingid)
+        bids = Bid.objects.filter(listing=listing)
+        bidcount = len(bids)
+    
+        listing.saved.add(request.user)
+        listing.save()
+        if returnpage == 'index':
+            return HttpResponseRedirect(reverse("index"))
+        else:
+            return HttpResponseRedirect(reverse("listing", args=(listingid,)))
+    else:
+        return HttpResponseRedirect(reverse("index"))
+
+def remove(request):
+    if request.method == "POST":
+        listingid = request.POST['listingid']
+        returnpage = request.POST['page']
+        listing = Listing.objects.get(pk=listingid)
+        bids = Bid.objects.filter(listing=listing)
+        bidcount = len(bids)
+    
+        listing.saved.remove(request.user)
+        listing.save()
+        if returnpage == 'index':
+            return HttpResponseRedirect(reverse("index"))
+        else:
+            return HttpResponseRedirect(reverse("listing", args=(listingid,)))
+    else:
+        return HttpResponseRedirect(reverse("index"))

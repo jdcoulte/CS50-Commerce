@@ -17,7 +17,7 @@ class Listing(models.Model):
     ]
     title = models.CharField(max_length=100)
     description = models.TextField(max_length=1000)
-    image_url = models.URLField()
+    image_url = models.URLField(blank=True)
     initial_bid = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     category = models.CharField(blank=True, choices=CATEGORIES, max_length=64)
     creation_time = models.DateTimeField()
@@ -25,6 +25,7 @@ class Listing(models.Model):
     active = models.BooleanField(default=True)
     max_bid = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     saved = models.ManyToManyField(User, blank=True, related_name="favorites")
+    winner = models.ForeignKey(User, related_name="listing_winner", default=None, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.title

@@ -14,14 +14,23 @@ Listing: {{ listing.title }}
             </div>
             {% if user.is_authenticated %}
                 <div class="col-4 right">
-                    {% if favorite %}
-                        <p class="rounded" id="onwatchlist">Watchlist</p>
-                        <p id="removefromwatchlist"><a href="remove/{{ listing.id }}">Remove</a></p>
+                    {% if listing.active %}
+                        {% if favorite %}
+                            <p class="rounded" id="onwatchlist">On Watchlist</p>
+                            <form action="/remove" method="post">
+                                <input type="hidden" name="listingid" value="{{ listing.id }}">
+                                <input type="hidden" name="page" value="listingpage">
+                                <input class="remove" type="submit" value="Remove">
+                            </form>
+                        {% else %}
+                            <form action="/add" method="post">
+                                <input type="hidden" name="listingid" value="{{ listing.id }}">
+                                <input type="hidden" name="page" value="listingpage">
+                                <input class="btn btn-secondary" type="submit" value="Add to Watchlist">
+                            </form>
+                        {% endif %}
                     {% else %}
-                        <form action="/add" method="post">
-                            <input type="hidden" value="{{ listing.id }}">
-                            <input class="btn btn-secondary" type="submit" value="Add to Watchlist">
-                        </form>
+                        <p class="rounded" id="listingclosed">Listing Closed</p>
                     {% endif %}
                 </div>
             {% endif %}
@@ -31,24 +40,64 @@ Listing: {{ listing.title }}
         </div>
         <div class="row p-2">
             <h3>Description:</h3>
+        </div>
+        <div class="row p-2">
             <p>{{ listing.description }}</p>
         </div>
         <div class="row p-2">
             <p id="listingprice"><strong>Current Price: </strong>${{ listing.max_bid }}</p>
         </div>
-        <p>{{ bidcount }} bids so far.</p>
-        <form action="{% url 'bid' listing.id %}" method="post">
-            {% csrf_token %}
-            {{ form }}
-            <input class="btn btn-primary" type="submit" value="Place Bid">
-        </form>
+        <div class="row p-2">
+            <h3>Bids:</h3>
+        </div>      
+        {% if user.is_authenticated %}
+            {% if listing.owner == user %}
+                {% if listing.active %}
+                    <p>{{ bidcount }} bids so far.</p>
+                    <form action="{% url 'close' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="listingid" value="{{ listing.id }}">
+                        <input class="btn btn-primary" type="submit" value="Close Listing">
+                    </form>
+                {% else %}
+                    <p>{{ bidcount }} total bids.</p>
+                    <p>This listing is currently closed. To re-open the listing, click the button below.</p>
+                    <form action="{% url 'open' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="listingid" value="{{ listing.id }}">
+                        <input class="btn btn-primary" type="submit" value="Re-Open Listing">
+                    </form>
+                {% endif %}
+            {% else %}
+                <form action="{% url 'bid' listing.id %}" method="post">
+                    {% csrf_token %}
+                        {{ form }}
+                    <input class="btn btn-primary" type="submit" value="Place Bid">
+                </form>
+            {% endif %}
+        {% else %}
+            <p><a href="{% url 'login' %}">Sign in</a> to place a bid</p>
+        {% endif %}
+        <br>
         <div class="row p-2">
             <h3>Additional Details:</h3>
+        </div>
+        <div class="row p-2">
             <ul>
-                <li>Listed by <strong>{{ owner }}</strong></li>
+                <li>Listed by <strong>{{ listing.owner }}</strong></li>
                 <li>Category: {{ listing.category }}</li>
                 <li>Listed on: {{ listing.creation_time }}</li>
             </ul>
         </div>
+        <div class="row p-2">
+            <h3>Comments:</h3>
+        </div>
+        {% if user.is_authenticated %}
+            <div class="row p-2">
+                [TODO]
+            </div>
+        {% else %}
+            <p><a href="{% url 'login' %}">Sign in</a> to view or add comments.</p>
+        {% endif %}        
     </div>
 {% endblock %}

@@ -13,11 +13,29 @@
                 <p class="pricerow"><strong>Price: </strong>${{ listing.max_bid }}</p>
                 <p class="descriptionrow">{{ listing.description }}</p>
                 <p class="creationtime">Created {{ listing.creation_time }}</p>
-                <a class="btn btn-primary listing-button" href="{% url 'listing' listing.id %}">View Full Listing</a>
-                <form action="/add" method="post">
-                    <input type="hidden" value="{{ listing.id }}">
-                    <input class="btn btn-primary listing-button" type="submit" value="Add to Watchlist">
-                </form>
+                <div class="row">
+                    <div class="col-2">
+                        <a class="btn btn-primary listing-button" href="{% url 'listing' listing.id %}">View Full Listing</a>
+                    </div>
+                    <div class="col-2 watchlistdiv">
+                        {% if listing in watchlist %}
+                            <p class="rounded" id="onwatchlistindex">On Watchlist</p><br>
+                            <form action="/remove" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="listingid" value="{{ listing.id }}">
+                                <input type="hidden" name="page" value="index">
+                                <button class="remove" type="submit">Remove</button>
+                            </form>
+                        {% else %}
+                            <form action="/add" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="listingid" value="{{ listing.id }}">
+                                <input type="hidden" name="page" value="index">
+                                <input class="btn btn-primary listing-button" type="submit" value="Add to Watchlist">
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
 
