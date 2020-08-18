@@ -20,7 +20,7 @@ body {
 }
 
 .listingrow {
-  height: 300px;
+  min-height: 300px;
 }
 
 .creationtime {
@@ -50,6 +50,7 @@ body {
 .listingimg {
   max-width: 100%;
   width: 400px;
+  max-height: 100%;
 }
 
 .pricerow {

@@ -25,7 +25,7 @@ class Listing(models.Model):
     active = models.BooleanField(default=True)
     max_bid = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     saved = models.ManyToManyField(User, blank=True, related_name="favorites")
-    winner = models.ForeignKey(User, related_name="listing_winner", default=None, on_delete=models.PROTECT)
+    winner = models.ForeignKey(User, null=True, default=None, on_delete=models.PROTECT, related_name="winning_listings")
 
     def __str__(self):
         return self.title

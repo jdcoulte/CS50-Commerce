@@ -18,12 +18,14 @@ Listing: {{ listing.title }}
                         {% if favorite %}
                             <p class="rounded" id="onwatchlist">On Watchlist</p>
                             <form action="/remove" method="post">
+                                {% csrf_token %}
                                 <input type="hidden" name="listingid" value="{{ listing.id }}">
                                 <input type="hidden" name="page" value="listingpage">
                                 <input class="remove" type="submit" value="Remove">
                             </form>
                         {% else %}
                             <form action="/add" method="post">
+                                {% csrf_token %}
                                 <input type="hidden" name="listingid" value="{{ listing.id }}">
                                 <input type="hidden" name="page" value="listingpage">
                                 <input class="btn btn-secondary" type="submit" value="Add to Watchlist">
