@@ -2,7 +2,10 @@
 
 {% block body %}
 
-    <h2>Active Listings</h2><br>
+    <h2>{{ title }}</h2><br>
+    {% if category %}
+        <p><a href="{% url 'index' %}"">Return to All Listings</a></p>
+    {% endif %}
     {% for listing in listings %}
         <div class="row border m-3 p-2 shadow listingrow">
             <div class="col-4 p-2 text-center">

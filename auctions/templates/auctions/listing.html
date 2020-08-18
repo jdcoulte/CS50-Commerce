@@ -28,7 +28,7 @@ Listing: {{ listing.title }}
                                 {% csrf_token %}
                                 <input type="hidden" name="listingid" value="{{ listing.id }}">
                                 <input type="hidden" name="page" value="listingpage">
-                                <input class="btn btn-secondary" type="submit" value="Add to Watchlist">
+                                <input class="btn btn-primary" type="submit" value="Add to Watchlist">
                             </form>
                         {% endif %}
                     {% else %}
@@ -55,7 +55,11 @@ Listing: {{ listing.title }}
         {% if user.is_authenticated %}
             {% if listing.owner == user %}
                 {% if listing.active %}
-                    <p>{{ bidcount }} bids so far.</p>
+                    {% if bidcount == 1 %}
+                        <p>{{ bidcount }} bid so far.</p>
+                    {% else %}
+                        <p>{{ bidcount }} bids so far.</p>
+                    {% endif %}
                     <form action="{% url 'close' %}" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="listingid" value="{{ listing.id }}">
@@ -63,6 +67,11 @@ Listing: {{ listing.title }}
                     </form>
                 {% else %}
                     <p>{{ bidcount }} total bids.</p>
+                    {% if winner %}
+                        <p><strong>Winning Bidder: </strong>{{ winner }}</p>
+                    {% else %}
+                        <p>There is not a winning bidder because there have not been any bids.</p>
+                    {% endif %}
                     <p>This listing is currently closed. To re-open the listing, click the button below.</p>
                     <form action="{% url 'open' %}" method="post">
                         {% csrf_token %}
@@ -71,9 +80,14 @@ Listing: {{ listing.title }}
                     </form>
                 {% endif %}
             {% else %}
-                <form action="{% url 'bid' listing.id %}" method="post">
+                <form action="{% url 'bid' %}" method="post">
                     {% csrf_token %}
-                        {{ form }}
+                    {% for field in form %}
+                        <div class="row p-2">
+                            {{ field.label_tag }}&nbsp;&nbsp;
+                            {{ field }}
+                        </div><br>
+                    {% endfor %}
                     <input class="btn btn-primary" type="submit" value="Place Bid">
                 </form>
             {% endif %}
@@ -87,19 +101,46 @@ Listing: {{ listing.title }}
         <div class="row p-2">
             <ul>
                 <li>Listed by <strong>{{ listing.owner }}</strong></li>
-                <li>Category: {{ listing.category }}</li>
+                <li>Category: <strong>{{ listing.category }}</strong></li>
                 <li>Listed on: {{ listing.creation_time }}</li>
             </ul>
         </div>
         <div class="row p-2">
-            <h3>Comments:</h3>
+            <h3>Comment:</h3>
         </div>
-        {% if user.is_authenticated %}
-            <div class="row p-2">
-                [TODO]
-            </div>
-        {% else %}
-            <p><a href="{% url 'login' %}">Sign in</a> to view or add comments.</p>
-        {% endif %}        
+        <div class="row p-2">
+            {% if user.is_authenticated %}
+            
+            <form action="{% url 'comment' %}" method="post" id="commentform">
+                {% csrf_token %}
+                <input type="hidden" name="listingid" value="{{ listing.id }}">
+                {% for field in commentform %}
+                    <div class="row pl-2">
+                        {{ field.label_tag }}
+                    </div>
+                    <div class="row pl-2 pb-2">
+                        {{ field }}
+                    </div>
+                {% endfor %}
+                <input class="btn btn-primary my-2" type="submit" value="Add a Comment">
+            </form>
+            
+            {% else %}
+                <p><a href="{% url 'login' %}">Sign in</a> to add comments.</p>
+            {% endif %}
+        </div>
+        <div class="row p-2">
+            <h4>All Comments:</h3>
+        </div>
+            {% for comment in comments %}
+                <div class="row p-2 mt-2 mb-4 border shadow">
+                    <p><u><em>Comment by user <strong>{{ comment.user }}</strong> on {{ comment.date }}:</em></u><br><br>
+                    {{ comment.comment }}</p>
+                </div>
+            {% empty %}
+                <div class="row p-2">
+                    <p>No comments yet!</p>
+                </div>
+            {% endfor %}
     </div>
 {% endblock %}

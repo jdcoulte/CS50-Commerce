@@ -1,5 +1,5 @@
 body {
-    padding: 10px;
+    padding: 10px 10px 50px 10px;
 }
 
 .pageheading {
@@ -119,6 +119,11 @@ body {
     margin-left: 15px;
   }
 
-  .watchlistdiv {
+.watchlistdiv {
       text-align: center;
       }
+
+#id_comment {
+    width: 750px;
+    height: 100px;
+}

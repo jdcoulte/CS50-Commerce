@@ -1,0 +1,14 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    <h2>Categories</h2>
+    <p>Choose a category from the list below to view all available listings in that category:</p>
+    <Ul>
+        {% for category in categories %}
+            <li><a href="{% url 'category' category %}">{{ category }}</a></li>
+        {% empty %}
+            <li>No categories available. <a href="{% url 'index' %}">Return to all listings.</a></li>
+        {% endfor %}
+    </Ul>
+{% endblock %}

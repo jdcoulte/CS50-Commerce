@@ -43,7 +43,7 @@ class Comment(models.Model):
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="listing_comments")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_comments")
     comment = models.TextField(max_length=1000)
-    date = models.DateField()
+    date = models.DateTimeField()
 
     def __str__(self):
         return f"User {self.user} comment on listing {self.listing} on {self.date}"
